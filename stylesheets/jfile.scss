@@ -1,0 +1,296 @@
+/*!
+ * jFile is “File uploading Ajax method for jQuery framework”.
+ *
+ * @author demorfi <demorfi@gmail.com>
+ * @version 1.0
+ * @source https://github.com/demorfi/jfile
+ * @license http://opensource.org/licenses/MIT Licensed under MIT License
+ */
+@import "compass/css3";
+
+// icons files extensions
+$icons : sprite-map("extensions/*.png");
+$icons-height : image-height(sprite-file($icons, file_extension_s7z));
+$icons-width : image-width(sprite-file($icons, file_extension_s7z));
+
+// image background
+$background-list : "background.png";
+
+// font icons interface
+@include font-face("jfile-icons", inline-font-files("icons.woff"));
+
+.jfile-wrapper
+{
+  font     :
+  {
+    family : Arial, Helvetica;
+    size   : small;
+  }
+
+  position : relative;
+  display  : inline;
+
+  img
+  {
+    border : none;
+  }
+
+  .jfile-list
+  {
+    margin     : 0;
+    padding    : 0;
+    min-width  : 300px;
+    width      : auto;
+    border     : 1px solid #2d2d2d;
+    background : inline-image($background-list) repeat left top #404040;
+
+    li
+    {
+      border   :
+      {
+        bottom : 1px solid #1b1b1b;
+        top    : 1px solid #444;
+      }
+      position : relative;
+      clear    : both;
+      margin   : 0 8px 0 5px;
+      padding  : 5px 52px 5px 32px;
+      color    : #c2c2c2;
+    }
+
+    &:first-child
+    {
+      border-top : none;
+    }
+
+    &:last-child
+    {
+      border-bottom : none;
+    }
+  }
+
+  // button remove file
+  .jfile-remove
+  {
+    float        : right;
+    margin-right : -52px;
+    width        : 16px;
+    height       : 16px;
+    opacity      : .7;
+    cursor       : pointer;
+
+    &::after
+    {
+      content : "\e603";
+      font    : 16px/20px "jfile-icons";
+    }
+
+    @include single-transition(opacity, 1s, ease);
+    &:hover
+    {
+      opacity : 1;
+      @include single-transition(opacity, 1s, ease);
+    }
+  }
+
+  .jfile-size
+  {
+    position    : absolute;
+    right       : 0;
+    height      : 16px;
+    text-shadow : 0 1px #090909;
+    font-size   : 11px;
+  }
+
+  .jfile-name
+  {
+    float         : left;
+    overflow      : hidden;
+    padding-right : 5px;
+    width         : 100%;
+    height        : 16px;
+    color         : #fff9f9;
+    text-shadow   : 0 1px #090909;
+    word-break    : break-all;
+  }
+
+  .jfile-type
+  {
+    position    : absolute;
+    left        : 0;
+    z-index     : 1;
+    float       : left;
+    width       : 32px;
+    height      : 32px;
+    color       : #323232;
+    text-align  : left;
+    text-indent : 8px;
+    cursor      : default;
+
+    // icon preview image
+    &.jfile-preview::after
+    {
+      content : "\e602";
+      font    : 16px/22px "jfile-icons";
+      cursor  : pointer;
+    }
+  }
+
+  // extensions files
+  .jfile-ext
+  {
+    width      : $icons-width;
+    height     : $icons-height;
+    background : inline-sprite($icons) no-repeat sprite-position($icons, file_extension_blank);
+
+    @each $type in s7z, bmp, chm, doc, exe, flv, gif, gz, htm, html, jar, jpeg, jpg, log, mov, mp3, mp4, mpeg,
+    mpg, ogg, pdf, png, psd, rar, rtf, swf, tgz, thm, tif, ttf, txt, wav, wps, xls, zip, blank
+    {
+      &.#{$type}
+      {
+        background :
+        {
+          position : sprite-position($icons, file_extension_#{$type});
+        }
+      }
+    }
+  }
+
+  .jfile-progress:not(.jfile-success):not(.jfile-error),
+  {
+    float            : left;
+    overflow         : hidden;
+    margin-top       : 5px;
+    width            : 100%;
+    height           : 5px;
+    background-color : #fff9f9;
+    box-shadow       : 0 0 1px #bcbcbc inset;
+
+    .jfile-progress-percent
+    {
+      @include background-image(linear-gradient(left, #d1f068 0%, #bced16 100%));
+      width  : 0;
+      height : 100%;
+    }
+  }
+
+  .jfile-indicator ~ .jfile-progress:not(.jfile-error):not(.jfile-success)
+  {
+    margin-right : -18px;
+    margin-left  : 6px;
+  }
+
+  .jfile-upload-break
+  {
+    .jfile-progress-percent
+    {
+      @include background-image(linear-gradient(left, #ff8585 0%, #ff0000 100%));
+    }
+  }
+
+  // preview image window
+  .jfile-image-preview
+  {
+    position         : absolute;
+    z-index          : 2;
+    padding          : 5px;
+    border           : 1px solid #ededed;
+    background-color : #fff9f9;
+    box-shadow       : 0 0 2px #ededed;
+  }
+
+  .jfile-drag
+  {
+    @extend .jfile-list;
+
+    position   : relative;
+    min-width  : 300px;
+    min-height : 100px;
+    width      : 100%;
+    height     : 100%;
+    border     : none;
+    cursor     : default;
+
+    &::after
+    {
+      position   : absolute;
+      top        : 50%;
+      z-index    : 1;
+      margin-top : -21px;
+      width      : 100%;
+      color      : #fff9f9;
+      content    : "\e600";
+      text-align : center;
+      font       : 42px/100% "jfile-icons";
+    }
+  }
+
+  .jfile-drag-object
+  {
+    position    : absolute;
+    top         : 10px;
+    right       : 10px;
+    bottom      : 10px;
+    left        : 10px;
+    z-index     : 2;
+    overflow    : hidden;
+    padding     : 10px;
+    outline     : 1px dashed #696969;
+    box-shadow  : 0 0 8px #000 inset;
+    color       : #fff9f9;
+    text-align  : center;
+    text-indent : -9999px;
+    text-shadow : 0 1px #090909;
+
+    @include single-transition(box-shadow, 2s, ease);
+    &.jfile-drag-over
+    {
+      box-shadow : 0 0 48px #000 inset;
+      @include single-transition(box-shadow, 2s, ease);
+    }
+  }
+
+  // uploaded files success
+  .jfile-success
+  {
+    float       : left;
+    color       : #bced16;
+    text-shadow : 0 1px #090909;
+    font-size   : 12px;
+  }
+
+  // uploaded files error
+  .jfile-error
+  {
+    @extend .jfile-success;
+    color : #ff0000;
+
+  }
+
+  .jfile-indicator-success
+  {
+    float       : left;
+    color       : #bced16;
+    text-shadow : 0 -1px #090909;
+    cursor      : default;
+
+    &::before
+    {
+      padding-right : 5px;
+      content       : "\e608";
+      font          : 12px "jfile-icons";
+    }
+  }
+
+  .jfile-indicator-error
+  {
+    @extend .jfile-indicator-success;
+    color : #ff0000;
+
+    &::before
+    {
+      content : "\e609";
+    }
+  }
+
+}

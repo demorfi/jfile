@@ -1,0 +1,20 @@
+### OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+### User specific & automatically generated files
+/toolchain
+/builds
+/.sass-cache
+
+### JetBrains
+.idea/
+
+### SVN
+.svn/
